@@ -1,14 +1,13 @@
 import math
 
-import requests
 import heroku3
+import requests
+from telegram.ext import CommandHandler, run_async
 
-from bot import dispatcher, HEROKU_APP_NAME, HEROKU_API_KEY
+from bot import HEROKU_API_KEY, HEROKU_APP_NAME, dispatcher
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.message_utils import sendMessage
-from telegram import update
-from telegram.ext import run_async, CommandHandler
 
 
 @run_async
@@ -21,7 +20,7 @@ def dyno_usage(update, context):
         sendMessage(
             "Please insert your HEROKU_APP_NAME and HEROKU_API_KEY in Vars",
             context.bot,
-            update
+            update,
         )
     useragent = (
         "Mozilla/5.0 (Linux; Android 10; SM-G975F) "
@@ -62,7 +61,7 @@ def dyno_usage(update, context):
 
             AppHours = math.floor(AppQuotaUsed / 60)
             AppMinutes = math.floor(AppQuotaUsed % 60)
-            
+
             sendMessage(
                 f"<b>Dyno Usage for</b> <code>{app.name}</code>:\n"
                 f"• <code>{AppHours}</code> <b>Hours and</b> <code>{AppMinutes}</code> <b>Minutes - {AppPercent}%</b>\n\n"
@@ -71,12 +70,15 @@ def dyno_usage(update, context):
                 "<b>Estimated Dyno Expired:</b>\n"
                 f"• <code>{day}</code> <b>Days</b>",
                 context.bot,
-                update
+                update,
             )
             return True
 
 
-dyno_usage_handler = CommandHandler(command=BotCommands.UsageCommand, callback=dyno_usage,
-                                    filters=CustomFilters.owner_filter | CustomFilters.sudo_user)
-                                    
+dyno_usage_handler = CommandHandler(
+    command=BotCommands.UsageCommand,
+    callback=dyno_usage,
+    filters=CustomFilters.owner_filter | CustomFilters.sudo_user,
+)
+
 dispatcher.add_handler(dyno_usage_handler)

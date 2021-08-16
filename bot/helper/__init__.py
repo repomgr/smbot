@@ -2,10 +2,12 @@ import asyncio
 import os
 import shlex
 from typing import Tuple
+
 from html_telegraph_poster import TelegraphPoster
 
+
 def post_to_telegraph(a_title: str, content: str) -> str:
-    """ Create a Telegram Post using HTML Content """
+    """Create a Telegram Post using HTML Content"""
     post_client = TelegraphPoster(use_api=True)
     auth_name = "slam-mirrorbot"
     post_client.create_api_token(auth_name)
@@ -19,7 +21,7 @@ def post_to_telegraph(a_title: str, content: str) -> str:
 
 
 async def runcmd(cmd: str) -> Tuple[str, str, int, int]:
-    """ run command in terminal """
+    """run command in terminal"""
     args = shlex.split(cmd)
     process = await asyncio.create_subprocess_exec(
         *args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
